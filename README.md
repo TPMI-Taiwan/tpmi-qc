@@ -1,6 +1,6 @@
 # TPMI Data QC
 ## Tools
-* PLINK/PLINK2.4
+* PLINK and PLINK2 (> 2.00a4)
 * PCAiR
 * ADMIXTURE
 * PC-Relate
