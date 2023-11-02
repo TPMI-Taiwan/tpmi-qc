@@ -28,6 +28,7 @@
         * 格式: PLINK binary fileset
         * 樣本: unrelated samples (參考資料 1kGP.3202_samples.pedigree_info.txt ([download](http://ftp.1000genomes.ebi.ac.uk/vol1/ftp/data_collections/1000G_2504_high_coverage/working/))
         * chromosome: chr1-chr22
+        * exclude SNPs in high LD region
     * 樣本資訊: igsr_samples.tsv ([download](https://www.internationalgenome.org/data-portal/sample))
         ```
         Sample    Sex    Biosample ID    Population code    Population name    Superpopulation code    Superpopulation name    Population elastic ID    Data collections
