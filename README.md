@@ -27,7 +27,7 @@
         * Format: PLINK binary fileset
         * Sample: unrelated samples (Refer to `1kGP.3202_samples.pedigree_info.txt` ([download](http://ftp.1000genomes.ebi.ac.uk/vol1/ftp/data_collections/1000G_2504_high_coverage/working/))) for additional information 
         * Autosome
-        * exclusions: SNPs in high linkage disequilibrium (LD) regions.
+        * Exclusions: SNPs in high linkage disequilibrium (LD) regions
     * Sample information: `igsr_samples.tsv` ([download](https://www.internationalgenome.org/data-portal/sample))
         ```
         Sample    Sex    Biosample ID    Population code    Population name    Superpopulation code    Superpopulation name    Population elastic ID    Data collections
@@ -45,7 +45,7 @@
         B       SS6004478       IHW9118 IHW9118 B_Australian-3  Australian      Oceania Australia       Cell_line_repository_sampling_location_unknown  ECCAC   U       -13     143     Genomic_from_cell_lines FullyPublic     X
         B       SS6004477       IHW9193 IHW9193 B_Australian-4  Australian      Oceania Australia       Cell_line_repository_sampling_location_unknown  ECCAC   M       -13     143     Genomic_from_cell_lines FullyPublic     X
         ```
-4. List of TPMI SNPs in high LD regions: (for step 3-1) See [Regions of high linkage disequilibrium (LD)](https://genome.sph.umich.edu/wiki/Regions_of_high_linkage_disequilibrium_(LD)))  for details on these regions.
+4. List of TPMI SNPs in high LD regions (for step 3-1): See [Regions of high linkage disequilibrium (LD)](https://genome.sph.umich.edu/wiki/Regions_of_high_linkage_disequilibrium_(LD))  for details of these regions.
 
 ## Required files & format
 1. PLINK binary fileset (prefix) path list, refer to [plink](https://www.cog-genomics.org/plink/1.9/data#merge_list) for format details. (`BFILE_LIST`, for step 1-1)
@@ -54,13 +54,13 @@
     /tpmi/TPM1/bfile/b000_000_001
     /tpmi/TPM1/bfile/b000_000_005
     ```
-2. List of batch ID (`BATCH_ID_LIST`, for step 1-1 ~ step 1-3):
+2. List of batch ID (`BATCH_ID_LIST`, for step 1-1 ~ step 1-3)
     ```
     b000_000_000
     b000_000_001
     b000_000_005
     ```
-3. Sample/Batch information (`BATCH_INFO`, for step 4-2): 
+3. Sample/Batch information (`BATCH_INFO`, for step 4-2)
     ```
     IID batch site
     A000000 b000_000_000 siteA
@@ -68,25 +68,25 @@
     C000000 b000_000_001 siteB
     D000000 b000_000_005 siteC
     ```
-4. Sample list of Tzu Chi hospital in Hualien (`TZUCHI_HL_LIST`, for step 3-4):
+4. Sample list of Tzu Chi hospital in Hualien (`TZUCHI_HL_LIST`, for step 3-4)
     ```
     A000000
     B000000
     ```
-5. List of sample current age (`age.list`, for step 5): 
+5. List of sample current age (`age.list`, for step 5)
     ```
     A000000 A000000 40
     B000000 B000000 50
     C000000 C000000 65
     ```
-6. List of sample sex (`sex.list`, for step 5):
+6. List of sample sex (`sex.list`, for step 5)
     ```
     A000000 A000000 Female
     B000000 B000000 Female
     C000000 C000000 Male
     D000000 D000000 Female
     ```
-7. Number of EMRs (Electronic Medical Records) each sample (`emr_count.txt`, for step 5):
+7. Number of EMRs (Electronic Medical Records) for each sample (`emr_count.txt`, for step 5)
    
    This data prioritizes samples based on the number of EMRs they are associated with. Samples with a higher number of EMRs are weight. 
     ```
@@ -100,23 +100,20 @@
 ## 1. Initial QC by batch
 
 ### 1-1 QC by batch (01_qc_by_batch)
-  * Remove SNPs with missing rate > 10%.
-  * Remove individuals with missing rate > 10%.
-  * Remove SNPs with missing rate > 5%.
-Commands:
+  * Remove SNPs with missing rate > 10%
+  * Remove individuals with missing rate > 10%
+  * Remove SNPs with missing rate > 5%
 ```
 ./01_exe.sh {BFILE_LIST}
 ./report.sh {BATCH_ID_LIST} ### optional
 ```
 ### 1-2 Missing rate difference between batches (02_snp_missing_diff)
-Identify SNPs where the largest difference in missing rate between any two batches exceeds 0.02.
-
-Command:
+Identify SNPs with the largest difference in missing rate > 0.02 between any two batches.
 ```
 ./02_exe.sh {BATCH_ID_LIST}
 ```
 ### 1-3 Allele frequency difference between batches (03_snp_freq)
-Identify SNPs with a difference in allele frequency > 0.1 between any two batches.
+Identify SNPs with difference in allele frequency > 0.1 between any two batches.
 
 ```
 ./03_exe_freq.sh {BATCH_ID_LIST}
@@ -125,15 +122,14 @@ Identify SNPs with a difference in allele frequency > 0.1 between any two batche
 ### 2-1 Merge (04_merge)
 Merge batches from step 1-1 QC, then remove SNPs identified in step 1-2 and step 1-3.
 
-Command:
 ```
 ./04_exe_uniq.sh
 ```
 ### 2-2 QC after merge (05_merge_qc)
-  * Remove TPMI special SNPs (`tpm.remove.affy.list`).
-  * Remove duplicated SNPs.
-  * Remove individuals with missing rate > 5%.
-  * Remove SNPs with missing rate > 2%.
+  * Remove TPMI special SNPs (`tpm.remove.affy.list`)
+  * Remove duplicated SNPs
+  * Remove individuals with missing rate > 5%
+  * Remove SNPs with missing rate > 2%
 
 This step also generates common SNPs required for PCA.
 
@@ -143,16 +139,16 @@ This step also generates common SNPs required for PCA.
 ## 3. Population assignment
 The aim of this step is to identify the Han Chinese population.
 
-Utilizing data from the 1000 Genomes Projects and SGDP, we first identify the EAS (East Asian) population using PCA, and then further distinguish the Han Chinese group using Admixture.
+Utilizing data from the 1000 Genomes Project and SGDP, we first identify the EAS (East Asian) population using PCA, and then further distinguish the Han Chinese group using Admixture.
 ### 3-1 PCA (06_pca)
 Run PCA using SNPs that are common across 1000 Genomes Projects, SGDP and TPMI data.
 ```
 ./06_exe.sh
 ```
 ### 3-2 PCAiR (07_eas_pcair)
-Identify EAS based on PCA results ,then QC and run PCAiR to calculate PCs for the EAS group.
-  * Remove SNPs with missing rate > 2%.
-  * Remove SNPs with MAF (Minor Allele Frequency) < 0.01.
+Identify EAS based on PCA results, then QC and run PCAiR to calculate PCs for the EAS group.
+  * Remove SNPs with missing rate > 2%
+  * Remove SNPs with MAF (Minor Allele Frequency) < 0.01
 ```
 ./07_exe.sh
 ```
@@ -184,16 +180,16 @@ Project remaining samples onto the reference to obtain their scores in each popu
 ###  4-1 QC (09_qc_within_han)
 1. Select samples assigned to the Han Chinese population.
 2. Basic QC:
-    * Remove SNPs with missing rate > 2%.
-    * Remove SNPs with MAF < 0.01.
+    * Remove SNPs with missing rate > 2%
+    * Remove SNPs with MAF < 0.01
 3. Sex check:
     * Remove samples that fail plink --check-sex test.
-    * Remove samples with gender data contradictory to the EMR provided gender.
+    * Remove samples with gender data contradictory to the EMR provided gender
 4. Heterozygosity check (F Coefficient):
-    * Exclude samples with an F score > 0.2 or < -0.2.
-5. Remove SNPs with MAF < 0.01.
-6. Retain only SNPs on autosome.
-7. Remove SNPs that fail HWE test (P-value < 1e-6).
+    * Exclude samples with F score > 0.2 or < -0.2
+5. Remove SNPs with MAF < 0.01
+6. Retain only SNPs on autosome
+7. Remove SNPs that fail HWE test (P-value < 1e-6)
 ``` 
 ./09_exe.sh
 ```
@@ -230,18 +226,18 @@ Establishing the maximum unrelated set and pedigree reconstruction.
 
 **1. Max unrelated set**   
 
-Run PRIMUS (related samples only):
+Run PRIMUS (related samples only)
 ```sh
 perl PRIMUS_v1.9.0/bin/run_PRIMUS.pl -i FILE=../10_batch_gwas/tpm1.han.afterQC.rmbatcheffects_pcrelate_forPRIMUS.txt IBD0=5 IBD1=6 IBD2=7 PI_HAT=8 --no_PR --high_qtrait emr_count.txt --degree_rel_cutoff 3 -o imus_3degree
 ```
-Combine PRIMUS results with other unrelated samples to form the maximum unrelated set.
+Combine PRIMUS results with unrelated samples to form the maximum unrelated set.
 ```sh
 grep -w -v -f <(cut -f1,3 ../10_batch_gwas/tpm1.han.afterQC.rmbatcheffects_pcrelate_forPRIMUS.txt |tr '\t' '\n'|sort | uniq) ../09_qc_within_han/han_geno002_maf001_checksex_het_maf001.autosome.hwe6.fam |cut -d' ' -f1 > not_in_primus.id
 cat not_in_primus.id imus_3degree/tpm1.han.afterQC.rmbatcheffects_pcrelate_forPRIMUS.txt_maximum_independent_set |grep -v IID| sed 's/\t//g' | sort > maximum_independent_set.3_degree.id
 ```
-**2. Pedigree Reconstruction**
+**2. Pedigree reconstruction**
 
-Run PRIMUS (related samples only):
+Run PRIMUS (related samples only)
 ```sh
 perl PRIMUS_v1.9.0/bin/run_PRIMUS.pl -i FILE=../10_batch_gwas/tpm1.han.afterQC.rmbatcheffects_pcrelate_forPRIMUS.txt IBD0=5 IBD1=6 IBD2=7 PI_HAT=8 --no_IMUS --age_file age.list --sexes FILE=sex.list SEX=3 MALE=Male FEMALE=Female --degree_rel_cutoff 3 -o tpm1_han_PR_3degre
 ```
