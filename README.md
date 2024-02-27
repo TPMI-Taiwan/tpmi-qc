@@ -242,3 +242,14 @@ Run PRIMUS (related samples only)
 ```sh
 perl PRIMUS_v1.9.0/bin/run_PRIMUS.pl -i FILE=../10_batch_gwas/tpm1.han.afterQC.rmbatcheffects_pcrelate_forPRIMUS.txt IBD0=5 IBD1=6 IBD2=7 PI_HAT=8 --no_IMUS --age_file age.list --sexes FILE=sex.list SEX=3 MALE=Male FEMALE=Female --degree_rel_cutoff 3 -o tpm1_han_PR_3degre
 ```
+
+**3. Remove Duplicates**
+
+Find duplicate pairs (PI_HAT > 0.9) and check with following rule:
+1. Different birthday or gender: Remove both (possibly sample misplacement).
+2. Same gender and birth:
+   * Different hospitals: Keep one (preferably the one with more medical records).
+   * Same hospitals: Keep both if the number of medical records is different (considered as twins). If the number of medical records is the same, manually confirm whether they are twins or the same individual.
+3. Prioritize retaining samples with medical record data.
+4. Pairs that cannot be confirmed are both retained.
+5. For known duplicates, prioritize keeping the genotype from the TPM2 array.
