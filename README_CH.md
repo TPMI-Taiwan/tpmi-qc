@@ -235,3 +235,16 @@ cat not_in_primus.id imus_3degree/tpm1.han.afterQC.rmbatcheffects_pcrelate_forPR
 ```sh
 perl PRIMUS_v1.9.0/bin/run_PRIMUS.pl -i FILE=../10_batch_gwas/tpm1.han.afterQC.rmbatcheffects_pcrelate_forPRIMUS.txt IBD0=5 IBD1=6 IBD2=7 PI_HAT=8 --no_IMUS --age_file age.list --sexes FILE=sex.list SEX=3 MALE=Male FEMALE=Female --degree_rel_cutoff 3 -o tpm1_han_PR_3degre
 ```
+
+**3. Remove Duplicates**
+
+選出 PI_HAT > 0.9 的 pair，移除 duplicate 、保留雙胞胎。
+
+樣本保留規則:
+1. 不生日或不同性別: 皆移除。
+2. 相同生日和性別
+   * 不同來源醫院: 保留病歷數較多的樣本。(視為重複收案)
+   * 相同來源醫院: 若病歷數量不同、兩個樣本皆保留(視為雙胞胎)；若病歷數相同則人工查看病歷確認是否為雙胞胎或同一人。
+3. 優先保留有病歷的樣本。
+4. 無法確認的情況皆先予以保留。
+5. 若是已知重複檢測的樣本，優先保留TPM2版本的結果。
