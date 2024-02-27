@@ -22,30 +22,31 @@
 
 ## Downloaded data
 1. TPMI special SNPs list: `tpm.remove.affy.list` / `tpm2.remove.affy.list` (for step 2-2)
-2. 1000 Genomes Project data (for step 3-1, 3-4)
+2. 1000 Genomes Project data (ONEKG_BFILE, for step 3-1, 3-4)
+    * Download VCF from [FTP](http://ftp.1000genomes.ebi.ac.uk/vol1/ftp/data_collections/1000G_2504_high_coverage/working/20201028_3202_phased/) and keep only SNPs which are biallelic and maximum number of alleles listed in REF and ALT
     * SNP data
         * Format: PLINK binary fileset
         * Sample: unrelated samples (Refer to `1kGP.3202_samples.pedigree_info.txt` ([download](http://ftp.1000genomes.ebi.ac.uk/vol1/ftp/data_collections/1000G_2504_high_coverage/working/))) for additional information 
         * Autosome
         * Exclusions: SNPs in high linkage disequilibrium (LD) regions
-    * Sample information: `igsr_samples.tsv` ([download](https://www.internationalgenome.org/data-portal/sample))
+    * Sample information: `igsr_samples.tsv` ([download](https://www.internationalgenome.org/data-portal/sample)) (IGSR_SAMPLE_LIST, for step 3-3-2)
         ```
         Sample    Sex    Biosample ID    Population code    Population name    Superpopulation code    Superpopulation name    Population elastic ID    Data collections
         HG00271    male    SAME123417    FIN    Finnish    EUR    European Ancestry    FIN    1000 Genomes on GRCh38,1000 Genomes 30x on GRCh38,1000 Genomes phase 3 release,1000 Genomes phase 1 release,Geuvadis
         HG00276    female    SAME123424    FIN    Finnish    EUR    European Ancestry    FIN    1000 Genomes on GRCh38,1000 Genomes 30x on GRCh38,1000 Genomes phase 3 release,1000 Genomes phase 1 release,Geuvadis
         ```
-3. SGDP data (for step 3-1, 3-4)
+4. SGDP data (SGDP_BFILE, for step 3-1, 3-4)
     * SNP data
         * Format: PLINK binary filest
         * Sample: ALL samples
         * Autosome
-    * Sample information: `SGDP_metadata.279publiu.21signedLetter.44Fan.samples.txt` ([download](https://sharehost.hms.harvard.edu/genetics/reich_lab/sgdp/SGDP_metadata.279public.21signedLetter.44Fan.samples.txt))
+    * Sample information: `SGDP_metadata.279publiu.21signedLetter.44Fan.samples.txt` ([download](https://sharehost.hms.harvard.edu/genetics/reich_lab/sgdp/SGDP_metadata.279public.21signedLetter.44Fan.samples.txt)) (SGDP_SAMPLE_LIST, for step 3-3-1)
         ```
         #Sequencing_Panel       Illumina_ID     Sample_ID       Sample_ID(Aliases)      SGDP_ID Population_ID   Region  Country Town    Contributor     Gender  Latitude        Longitude       DNA_Source      Embargo "SGDP-lite category: X=FullyPublic, Y=SignedLetterNoDelay, Z=SignedLetterDelay, DO_NOT_USE=do.not.use"
         B       SS6004478       IHW9118 IHW9118 B_Australian-3  Australian      Oceania Australia       Cell_line_repository_sampling_location_unknown  ECCAC   U       -13     143     Genomic_from_cell_lines FullyPublic     X
         B       SS6004477       IHW9193 IHW9193 B_Australian-4  Australian      Oceania Australia       Cell_line_repository_sampling_location_unknown  ECCAC   M       -13     143     Genomic_from_cell_lines FullyPublic     X
         ```
-4. List of TPMI SNPs in high LD regions (for step 3-1): See [Regions of high linkage disequilibrium (LD)](https://genome.sph.umich.edu/wiki/Regions_of_high_linkage_disequilibrium_(LD))  for details of these regions.
+5. List of TPMI SNPs in high LD regions (HIGH_LD_REGION_BED, for step 3-1): See [Regions of high linkage disequilibrium (LD)](https://genome.sph.umich.edu/wiki/Regions_of_high_linkage_disequilibrium_(LD))  for details of these regions.
 
 ## Required files & format
 1. PLINK binary fileset (prefix) path list, refer to [plink](https://www.cog-genomics.org/plink/1.9/data#merge_list) for format details. (`BFILE_LIST`, for step 1-1)
@@ -143,14 +144,14 @@ Utilizing data from the 1000 Genomes Project and SGDP, we first identify the EAS
 ### 3-1 PCA (06_pca)
 Run PCA using SNPs that are common across 1000 Genomes Projects, SGDP and TPMI data.
 ```
-./06_exe.sh
+./06_exe.sh {ONEKG_BFILE} {SGDP_BFILE}
 ```
 ### 3-2 PCAiR (07_eas_pcair)
 Identify EAS based on PCA results, then QC and run PCAiR to calculate PCs for the EAS group.
   * Remove SNPs with missing rate > 2%
   * Remove SNPs with MAF (Minor Allele Frequency) < 0.01
 ```
-./07_exe.sh
+./07_exe.sh {HIGH_LD_REGION_BED}
 ```
 ### 3-3 Admixture
 This part includes 3 steps: establishing a reference, projection and assignment.
@@ -161,12 +162,12 @@ This part includes 3 steps: establishing a reference, projection and assignment.
    * TPM1: > 0.7
    * TPM2: > 0.65
 ```
-./08_exe.sh {TZUCHI_HL_LIST}
+./08_exe.sh {IGSR_SAMPLE_LIST} {TZUCHI_HL_LIST}
 ```
 3. Combine samples from previous step and perform Admixture again.
 ```
 cd refQ
-./08_exe_refQ.sh
+./08_exe_refQ.sh {SGDP_SAMPLE_LIST}
 ```
 The output file (*.P) is used as the reference panel for projection.
 ### 3-3-2 Projection (08_admixture/project_eas)
