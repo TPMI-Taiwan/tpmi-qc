@@ -1,12 +1,10 @@
 #!/bin/bash
 
-TZUCHI_HL=$1	## Individual who came from Hualien Tzu Chi Hospital
-pop="../../igsr_samples.tsv"
+igsr_samples=$1
+TZUCHI_HL=$2	## Individual who came from Hualien Tzu Chi Hospital
 
-if [[ ! -e $pop ]]; then
-	echo "### ERROR: $pop not found" && exit
-fi
-grep -P 'East Asian Ancestry' $pop | sort -k8 | cut -f1 > igsr_samples.eas.id
+cp $igsr_samples ../igsr_samples.tsv
+grep -P 'East Asian Ancestry' ../igsr_samples.tsv | sort -k8 | cut -f1 > igsr_samples.eas.id
 
 
 if [[ ! -e $TZUCHI_HL ]]; then
@@ -30,16 +28,13 @@ for ((run=0; run<5; run++)); do
 	plink --bfile ../../06_pca/pca --keep keep${run}.fam --make-bed --out run${run}
 	[[ $? -ne 0 ]] && exit
 	
-	/usr/bin/time -v -o run${run}.time /gfs/tpmi/jps/arrayQC/dist/admixture_linux-1.3.0/admixture run${run}.bed 5 -j144 &> run${run}.log
+	/usr/bin/time -v -o admixture.run${run}.time /opt/app/admixture_linux-1.3.0/admixture run${run}.bed 5 -j144 &> admixture.run${run}.log
 	if [[ $? -ne 0 ]]; then
-	       echo "### ERROR: see run${run}.log for details."
+	       echo "### ERROR: see admixture.run${run}.log for details."
 	fi
 
-	python3.11 cal.py run$run 5 $pop &> cal.run$run.log
+	python3.11 cal.py run$run 5 ../igsr_samples.tsv &> cal.run$run.log
 	if [[ $? -ne 0 ]]; then
 	       echo "### ERROR: see cal.run$run.log for details."
 	fi
 done
-
-grep -w -f <(cat run*.pop_assign.txt | awk '{if($8!="-")print $1}' | sort -u) ../../07_eas_pcair/tpm1.eas.fam | sort -u > tpm1.ref.fam
-cat tpm1.ref.fam | cut -d' ' -f1 | sort -u > tpm1.ref.id

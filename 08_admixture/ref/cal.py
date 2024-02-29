@@ -6,15 +6,13 @@ pre=sys.argv[1]
 k = int(sys.argv[2])
 igsr=sys.argv[3]
 
+c = ['v1','v2','v3','v4','v5','v6','v7','v8','v9','v10']
 tbl = pd.read_csv(pre+'.'+str(k)+'.Q',sep=' ',names=c[:k])
 fam = pd.read_csv(pre+'.fam',sep=' ',names=['IID','FID','a','b','c','d'])
 pop = pd.read_csv(igsr, sep='\t')
-c = ['v1','v2','v3','v4','v5','v6','v7','v8','v9','v10']
 
 m1 = pd.concat([fam['IID'],tbl], axis=1, join='inner')
 m2 = m1.merge(pop, left_on='IID', right_on='Sample name', how='left')
-
-print(c[:k])
 
 mean_df = pd.DataFrame()
 
@@ -26,7 +24,6 @@ mean_df['KHV'] = m2.loc[m2['Population elastic ID'] == 'KHV'].iloc[:,1:k+1].mean
 
 
 mean_df.transpose().to_csv(pre+'.'+str(k)+'.mean',index=True, sep='\t', float_format='%.6f')
-print(mean_df.transpose())
 
 idmax = m2[c[:k]].idxmax(axis=1)
 max1 = m2[c[:k]].max(axis=1)

@@ -1,0 +1,16 @@
+## Run PCA after Han QC
+script: ./runPCAir_afterHanQC.sh
+Input: Han sample data plink format (after QC)
+This step would generate 32 PCs for SAIGE batch GWAS
+
+## Combine phenotype(run_all.txt), sex and pcs being covariates to run Batch GWAS by SAIGE
+script: ./runSAIGE.sh
+Header of pheno.txt: IID, SEX, PCAIR1~PCAIR10, batch1_vs_batch2
+Input: Han after QC plink format and pheno.txt
+This step would generate SAIGE GWAS output and extract out SNPs whose p-value < 5e-8
+
+## Remove all significant SNPs and Run PCA & PCRelate
+script: ./runPCAir_PCRelate_afterSAIGE.sh
+Input: Han sample data plink format (after QC and remove batch effects)
+This step would generate 32 PCs and kinship between sample pairs for PRIMUS
+Note: If running out of memory, you may want to separate samples, please refer to https://github.com/UW-GAC/analysis_pipeline/tree/master#relatedness-and-population-structure
