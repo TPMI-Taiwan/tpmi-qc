@@ -80,7 +80,7 @@
     B000000 B000000 50
     C000000 C000000 65
     ```
-6. List of sample sex (`sex.list`, for step 5)
+6. List of sample sex (`sex.list`, for step 4-5)
     ```
     A000000 A000000 Female
     B000000 B000000 Female
