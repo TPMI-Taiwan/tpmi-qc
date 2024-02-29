@@ -146,8 +146,11 @@ Run PCA using SNPs that are common across 1000 Genomes Projects, SGDP and TPMI d
 ```
 ./06_exe.sh {ONEKG_BFILE} {SGDP_BFILE}
 ```
+Identify EAS based on PCA results.
+
+<img src="https://github.com/TPMI-Taiwan/tpmi-qc/blob/readme-edits/06_pca/pca.PC1PC2.1kg.png" alt="Image" width="500" height="500"><img src="https://github.com/TPMI-Taiwan/tpmi-qc/blob/readme-edits/06_pca/pca.PC1PC2.cut_eas.tpm1.png" alt="Image" width="500" height="500">
 ### 3-2 PCAiR (07_eas_pcair)
-Identify EAS based on PCA results, then QC and run PCAiR to calculate PCs for the EAS group.
+QC and run PCAiR to calculate PCs for the EAS group.
   * Remove SNPs with missing rate > 2%
   * Remove SNPs with MAF (Minor Allele Frequency) < 0.01
 ```
@@ -169,12 +172,18 @@ This part includes 3 steps: establishing a reference, projection and assignment.
 cd refQ
 ./08_exe_refQ.sh {SGDP_SAMPLE_LIST}
 ```
-The output file (*.P) is used as the reference panel for projection.
+The output file (*.P) is used as the reference panel for projection. The mean file (*.mean) contains the averages of known population samples in each group.
 ### 3-3-2 Projection (08_admixture/project_eas)
 Project remaining samples onto the reference to obtain their scores in each population group. Assign samples to the population with the highest score if it exceeds 0.4 and is at least 0.1 higher than the second-highest score.
 ```
 ./08_exe_project.sh
 ```
+*.pop_assign.txt reports the highest score (max), second-highest score (second), the population corresponding to the highest score (max_group), and population assignments at different thresholds for each sample. The thresholds are as follows:
+  * gt04: Highest score > 0.4 and at least 0.1 higher than the second-highest score (- indicates failure to meet this condition).
+  * gt05: Highest score > 0.5 and at least 0.1 higher than the second-highest score (- indicates failure to meet this condition).
+  * ... and so on
+
+Based on the result and mean file, identify samples from the Han Chinese population.
 
 ## 4. QC within Han
 
