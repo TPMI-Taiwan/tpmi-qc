@@ -140,6 +140,11 @@
 ```
 ./06_exe.sh
 ```
+根據 PCA 結果切出 EAS 族群的樣本。
+
+<img src="https://github.com/TPMI-Taiwan/tpmi-qc/blob/readme-edits/06_pca/pca.PC1PC2.1kg.png" alt="Image" width="500" height="500"><img src="https://github.com/TPMI-Taiwan/tpmi-qc/blob/readme-edits/06_pca/pca.PC1PC2.cut_eas.tpm1.png" alt="Image" width="500" height="500">
+
+
 ### 3-2 PCAiR (07_eas_pcair)
 根據 PCA 結果挑出 TPMI EAS 族群，QC 後執行 PCAiR 產生 EAS 的 PCs。
   * 移除 SNPs missing rate > 2%
@@ -163,12 +168,19 @@
 cd refQ
 ./08_exe_refQ.sh
 ```
-output 檔 *.P 作為 reference panel。
+output 檔 run.P 作為 reference panel，run.5.mean 檔為已知族群樣本在各組的平均，可以得知各個組別 (column) 所對應的族群。
 ### 3-3-2 Projection (08_admixture/project_eas)
 將其他樣本投影 (projection) 到 reference，獲得樣本再各族群的分數。最高分 > 0.4 且比第二高分高出 0.1，則將樣本 assign 此最高分所屬的族群。
 ```
 ./08_exe_project.sh
 ```
+*.pop_assign.txt 整理了各個樣本的最高分(max)、第二高分(second)、最高分對應到的族群(max_group)以及不同門檻會的族群assignment，條件如下
+   * gt04: 最高分>0.4, 且比第二高分至少高了0.1 (- 表示不滿足此條件)
+   * gt05: 最高分>0.5, 且比第二高分至少高了0.1 (- 表示不滿足此條件)
+   * ... 以此類推
+
+根據此檔案和前一步的 run.5.mean 挑出 Han Chinese 族群的樣本。
+
 ## 4. QC within Han
 
 ###  4-1 QC (09_qc_within_han)
