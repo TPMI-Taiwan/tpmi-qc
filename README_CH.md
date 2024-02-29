@@ -22,30 +22,31 @@
 
 ## Downloaded data
 1. TPMI special SNPs 清單: `tpm.remove.affy.list` / `tpm2.remove.affy.list` (for step 2-2)
-2. 1000 Genomes Project 資料 (for step 3-1, 3-4)
+2. 1000 Genomes Project 資料 (`ONEKG_BFILE`, for step 3-1, 3-4)
+    * 下載 VCF ([http://ftp.1000genomes.ebi.ac.uk/vol1/ftp/data_collections/1000G_2504_high_coverage/working/20201028_3202_phased/]) 檔案並只保留 biallelic SNPs 
     * SNP data
         * 格式: PLINK binary fileset
         * 樣本: unrelated samples (參考資料 `1kGP.3202_samples.pedigree_info.txt` ([download](http://ftp.1000genomes.ebi.ac.uk/vol1/ftp/data_collections/1000G_2504_high_coverage/working/)))
         * chromosome: chr1-chr22
-        * exclude SNPs in high LD region
+        * 排除 high linkage disequilibrium (LD) 區間內的 SNPs
     * 樣本資訊: `igsr_samples.tsv` ([download](https://www.internationalgenome.org/data-portal/sample))
         ```
         Sample    Sex    Biosample ID    Population code    Population name    Superpopulation code    Superpopulation name    Population elastic ID    Data collections
         HG00271    male    SAME123417    FIN    Finnish    EUR    European Ancestry    FIN    1000 Genomes on GRCh38,1000 Genomes 30x on GRCh38,1000 Genomes phase 3 release,1000 Genomes phase 1 release,Geuvadis
         HG00276    female    SAME123424    FIN    Finnish    EUR    European Ancestry    FIN    1000 Genomes on GRCh38,1000 Genomes 30x on GRCh38,1000 Genomes phase 3 release,1000 Genomes phase 1 release,Geuvadis
         ```
-3. SGDP 資料 (for step 3-1, 3-4)
+3. SGDP 資料 (`SGDP_BFILE`, for step 3-1, 3-4)
     * SNP data
         * 格式: PLINK binary filest
         * 樣本: ALL
         * chromosome: chr1-chr22
-    * 樣本資訊: `SGDP_metadata.279publiu.21signedLetter.44Fan.samples.txt` ([download](https://sharehost.hms.harvard.edu/genetics/reich_lab/sgdp/SGDP_metadata.279public.21signedLetter.44Fan.samples.txt))
+    * 樣本資訊: `SGDP_metadata.279publiu.21signedLetter.44Fan.samples.txt` ([download](https://sharehost.hms.harvard.edu/genetics/reich_lab/sgdp/SGDP_metadata.279public.21signedLetter.44Fan.samples.txt)) (SGDP_SAMPLE_LIST, for step 3-3-1)
         ```
         #Sequencing_Panel       Illumina_ID     Sample_ID       Sample_ID(Aliases)      SGDP_ID Population_ID   Region  Country Town    Contributor     Gender  Latitude        Longitude       DNA_Source      Embargo "SGDP-lite category: X=FullyPublic, Y=SignedLetterNoDelay, Z=SignedLetterDelay, DO_NOT_USE=do.not.use"
         B       SS6004478       IHW9118 IHW9118 B_Australian-3  Australian      Oceania Australia       Cell_line_repository_sampling_location_unknown  ECCAC   U       -13     143     Genomic_from_cell_lines FullyPublic     X
         B       SS6004477       IHW9193 IHW9193 B_Australian-4  Australian      Oceania Australia       Cell_line_repository_sampling_location_unknown  ECCAC   M       -13     143     Genomic_from_cell_lines FullyPublic     X
         ```
-4. High LD 區間的 TPMI SNPs 清單 (High LD 區間位置可參考 [Regions of high linkage disequilibrium (LD)](https://genome.sph.umich.edu/wiki/Regions_of_high_linkage_disequilibrium_(LD)))  (for step 3-1)
+4. High LD 區間的 TPMI SNPs 清單 (High LD 區間位置可參考 [Regions of high linkage disequilibrium (LD)](https://genome.sph.umich.edu/wiki/Regions_of_high_linkage_disequilibrium_(LD)))  (`HIGH_LD_REGION_BED`, for step 3-1)
 
 ## Required files & format
 1. PLINK binary fileset (prefix) 檔案路徑清單，格式可參考 [plink](https://www.cog-genomics.org/plink/1.9/data#merge_list) (`BFILE_LIST`, for step 1-1)
@@ -79,7 +80,7 @@
     B000000 B000000 50
     C000000 C000000 65
     ```
-6. 樣本性別清單 (`sex.list`, for step 5)
+6. 樣本性別清單 (`sex.list`, for step 4 和 step 5)
     ```
     A000000 A000000 Female
     B000000 B000000 Female
@@ -138,7 +139,7 @@
 ### 3-1 PCA (06_pca)
 用 1000 Genome Projects、SGDP 和 TPMI 交集的 SNPs 做 PCA。
 ```
-./06_exe.sh
+./06_exe.sh {ONEKG_BFILE} {SGDP_BFILE}
 ```
 根據 PCA 結果切出 EAS 族群的樣本。
 
@@ -150,7 +151,7 @@
   * 移除 SNPs missing rate > 2%
   * 移除 MAF < 0.01
 ```
-./07_exe.sh
+./07_exe.sh {HIGH_LD_REGION_BED}
 ```
 ### 3-3 Admixture
 包含建立 reference, projection 以及 assignment 等步驟。
@@ -161,12 +162,12 @@
    * TPM1: > 0.7
    * TPM2: > 0.65
 ```
-./08_exe.sh {TZUCHI_HL_LIST}
+./08_exe.sh {IGSR_SAMPLE_LIST} {TZUCHI_HL_LIST}
 ```
 3. 將前一步獲得的樣本合併再執行一次 Admixture。
 ```
 cd refQ
-./08_exe_refQ.sh
+./08_exe_refQ.sh {SGDP_SAMPLE_LIST}
 ```
 output 檔 run.P 作為 reference panel，run.5.mean 檔為已知族群樣本在各組的平均，可以得知各個組別 (column) 所對應的族群。
 ### 3-3-2 Projection (08_admixture/project_eas)
