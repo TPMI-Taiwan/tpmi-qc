@@ -20,12 +20,12 @@ if (!dir.exists("plot")){
 colors <- c('black','dodgerblue4','gold','forestgreen','firebrick','darkorchid')
 
 pca$color=colors[1]
-pca$color[which(pca$IID %in% pop_1kg$Sample[which(pop_1kg$Superpopulation.code=='AFR')])]=colors[2]
-pca$color[which(pca$IID %in% pop_1kg$Sample[which(pop_1kg$Superpopulation.code=='AMR')])]=colors[3]
-pca$color[which(pca$IID %in% pop_1kg$Sample[which(pop_1kg$Superpopulation.code=='EAS')])]=colors[4]
-pca$color[which(pca$IID %in% pop_1kg$Sample[which(pop_1kg$Superpopulation.code=='EUR')])]=colors[5]
-pca$color[which(pca$IID %in% pop_1kg$Sample[which(pop_1kg$Superpopulation.code=='SAS')])]=colors[6]
-pca$color[which(pca$IID %in% pop_1kg$Sample[which(pop_1kg$Superpopulation.code=='EUR,AFR')])]='gray'
+pca$color[which(pca$IID %in% pop_1kg$Sample.name[which(pop_1kg$Superpopulation.code=='AFR')])]=colors[2]
+pca$color[which(pca$IID %in% pop_1kg$Sample.name[which(pop_1kg$Superpopulation.code=='AMR')])]=colors[3]
+pca$color[which(pca$IID %in% pop_1kg$Sample.name[which(pop_1kg$Superpopulation.code=='EAS')])]=colors[4]
+pca$color[which(pca$IID %in% pop_1kg$Sample.name[which(pop_1kg$Superpopulation.code=='EUR')])]=colors[5]
+pca$color[which(pca$IID %in% pop_1kg$Sample.name[which(pop_1kg$Superpopulation.code=='SAS')])]=colors[6]
+pca$color[which(pca$IID %in% pop_1kg$Sample.name[which(pop_1kg$Superpopulation.code=='EUR,AFR')])]='gray'
 
 ### plot 1KG 5 pop 
 png(paste('plot/pca.',pc1,pc2,'.1kg.png', sep=''), width = 2000, height = 2000,  units = "px", pointsize = 56)
@@ -50,7 +50,7 @@ dev.off()
 
 ### plot 1KG 5 pop & tpmi cutting line & assignment 
 png(paste('plot/pca.',pc1,pc2,'.eas.tpm1.png', sep=''), width = 2000, height = 2000,  units = "px", pointsize = 56)
-plot(pca[which(pca$IID %in% pop_1kg$Sample[]), c(pc1,pc2)], col = pca$color[which(pca$IID %in% pop_1kg$Sample.name[])], pch=1, lwd=3)
+plot(pca[which(pca$IID %in% pop_1kg$Sample.name[]), c(pc1,pc2)], col = pca$color[which(pca$IID %in% pop_1kg$Sample.name[])], pch=1, lwd=3)
 points(pca[which(pca$IID %in% tpmifam$IID[]), c(pc1,pc2)], col = 'gray50', pch=4, lwd=3)
 points(pca[which(pca$IID %in% iseas$IID[]), c(pc1,pc2)], col = 'black', pch=4, lwd=3)
 lines(c(-0.03,0),c(0,0.025),col='black', lwd=3)
@@ -76,7 +76,7 @@ pca$color[which(pca$FID %in% pop_1kg$Sample.name[which(pop_1kg$Population.code==
 
 
 png(paste('plot/pca.',pc1,pc2,'.eas.png', sep=''), width = 2000, height = 2000,  units = "px", pointsize = 56)
-plot(pca[which(pca$IID %in% pop_1kg$Sample.name[which(pop_1kg$Superpopulation.code=='EAS')]), c(pc1,pc2)], col = pca$color[which(pca$IID %in% pop_1kg$Sample[which(pop_1kg$Superpopulation.code=='EAS')])], pch=16, ylim=c(-0.1,0.1))
+plot(pca[which(pca$IID %in% pop_1kg$Sample.name[which(pop_1kg$Superpopulation.code=='EAS')]), c(pc1,pc2)], col = pca$color[which(pca$IID %in% pop_1kg$Sample.name[which(pop_1kg$Superpopulation.code=='EAS')])], pch=16, ylim=c(-0.1,0.1))
 points(pca[which(pca$IID %in% tpmifam$IID[]), c(pc1,pc2)], col = 'gray50', pch='+')
 legend('bottomright', legend = c('CDX','CHB','CHS','JPT','KHV'), col = c(colors[2],colors[3],colors[4],colors[5],colors[6]), pch=15)
 dev.off()
