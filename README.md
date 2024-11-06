@@ -142,7 +142,7 @@ The aim of this step is to identify the Han Chinese population.
 
 Utilizing data from the 1000 Genomes Project and SGDP, we first identify the EAS (East Asian) population using PCA, and then further distinguish the Han Chinese group using Admixture.
 ### 3-1 PCA (06_pca)
-Run PCA using SNPs that are common across 1000 Genomes Projects, SGDP and TPMI data.
+Run PCA using SNPs that are common across 1000 Genomes Project, SGDP and TPMI data.
 ```
 ./06_exe.sh {ONEKG_BFILE} {SGDP_BFILE}
 ```
