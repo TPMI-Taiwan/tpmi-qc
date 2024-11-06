@@ -6,7 +6,7 @@ onekg_comm=1kg_stage2_comm.autosome.exHighLD.snps_only.maf001
 
 
 ###
-### Doing PCA with intersection SNPs from 1000 Genome Projects, SGDP and TPMI
+### Doing PCA with intersection SNPs from 1000 Genomes Project, SGDP and TPMI
 ###
 
 
