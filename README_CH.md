@@ -23,10 +23,10 @@
 ## Downloaded data
 1. TPMI special SNPs 清單: `tpm.remove.affy.list` / `tpm2.remove.affy.list` (for step 2-2)
 2. 1000 Genomes Project 資料 (`ONEKG_BFILE`, for step 3-1, 3-4)
-    * 下載 VCF ([http://ftp.1000genomes.ebi.ac.uk/vol1/ftp/data_collections/1000G_2504_high_coverage/working/20201028_3202_phased/]) 檔案並只保留 biallelic SNPs 
-    * SNP data
-        * 格式: PLINK binary fileset
-        * 樣本: unrelated samples (參考資料 `1kGP.3202_samples.pedigree_info.txt` ([download](http://ftp.1000genomes.ebi.ac.uk/vol1/ftp/data_collections/1000G_2504_high_coverage/working/)))
+    * 從 [FTP]( http://ftp.1000genomes.ebi.ac.uk/vol1/ftp/data_collections/1000G_2504_high_coverage/working/20201028_3202_phased/ ) 下載 VCF 並只保留 biallelic SNPs 
+    * SNP data 
+        * 所需格式: PLINK binary fileset
+        * 使用樣本: unrelated samples (參考資料 `1kGP.3202_samples.pedigree_info.txt` ([download](http://ftp.1000genomes.ebi.ac.uk/vol1/ftp/data_collections/1000G_2504_high_coverage/working/)))
         * chromosome: chr1-chr22
         * 排除 high linkage disequilibrium (LD) 區間內的 SNPs
     * 樣本資訊: `igsr_samples.tsv` ([download](https://www.internationalgenome.org/data-portal/sample))
@@ -36,9 +36,10 @@
         HG00276    female    SAME123424    FIN    Finnish    EUR    European Ancestry    FIN    1000 Genomes on GRCh38,1000 Genomes 30x on GRCh38,1000 Genomes phase 3 release,1000 Genomes phase 1 release,Geuvadis
         ```
 3. SGDP 資料 (`SGDP_BFILE`, for step 3-1, 3-4)
+    * 從 [FTP]( https://sharehost.hms.harvard.edu/genetics/reich_lab/sgdp/vcf_variants/) 下載 VCF
     * SNP data
-        * 格式: PLINK binary filest
-        * 樣本: ALL
+        * 所需格式: PLINK binary filest
+        * 使用樣本: Oceania, EastAsia, SouthAsia
         * chromosome: chr1-chr22
     * 樣本資訊: `SGDP_metadata.279publiu.21signedLetter.44Fan.samples.txt` ([download](https://sharehost.hms.harvard.edu/genetics/reich_lab/sgdp/SGDP_metadata.279public.21signedLetter.44Fan.samples.txt)) (SGDP_SAMPLE_LIST, for step 3-3-1)
         ```
@@ -46,7 +47,7 @@
         B       SS6004478       IHW9118 IHW9118 B_Australian-3  Australian      Oceania Australia       Cell_line_repository_sampling_location_unknown  ECCAC   U       -13     143     Genomic_from_cell_lines FullyPublic     X
         B       SS6004477       IHW9193 IHW9193 B_Australian-4  Australian      Oceania Australia       Cell_line_repository_sampling_location_unknown  ECCAC   M       -13     143     Genomic_from_cell_lines FullyPublic     X
         ```
-4. High LD 區間的 TPMI SNPs 清單 (High LD 區間位置可參考 [Regions of high linkage disequilibrium (LD)](https://genome.sph.umich.edu/wiki/Regions_of_high_linkage_disequilibrium_(LD)))  (`HIGH_LD_REGION_BED`, for step 3-1)
+5. High LD 區間的 TPMI SNPs 清單 (High LD 區間位置可參考 [Regions of high linkage disequilibrium (LD)](https://genome.sph.umich.edu/wiki/Regions_of_high_linkage_disequilibrium_(LD)))  (`HIGH_LD_REGION_BED`, for step 3-1)
 
 ## Required files & format
 1. PLINK binary fileset (prefix) 檔案路徑清單，格式可參考 [plink](https://www.cog-genomics.org/plink/1.9/data#merge_list) (`BFILE_LIST`, for step 1-1)
@@ -136,6 +137,15 @@
 此步驟目的為辨識出 Han Chinese 族群。
 
 以 1000 Genomes Projects 和 SGDP 資料為輔助，先用 PCA 分出 EAS 族群，再用 Admixture 從 EAS 分出 Han Chinese 族群。
+
+### PCA analysis 位點篩選
+將 1000 Genomes Project 及 SGDP 資料進行以下過濾
+   * 只保留 chr1-chr22 的位點
+   * 移除在 high LD region 的位點
+   * 只保留單點變異 (plink --snps-only)
+   * 保留 maf>0.01 的位點
+過濾完的資料 `ONEKG_BFILE` 和 `SGDP_BFILE` 為後面步驟的輸入檔。
+
 ### 3-1 PCA (06_pca)
 用 1000 Genome Projects、SGDP 和 TPMI 交集的 SNPs 做 PCA。
 ```
