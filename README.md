@@ -27,7 +27,7 @@
     * SNP data
         * Format: PLINK binary fileset
         * Sample: unrelated samples (Refer to `1kGP.3202_samples.pedigree_info.txt` ([download](http://ftp.1000genomes.ebi.ac.uk/vol1/ftp/data_collections/1000G_2504_high_coverage/working/))) for additional information 
-        * Autosome
+        * Autosome (chr1~chr22)
         * Exclusions: SNPs in high linkage disequilibrium (LD) regions
     * Sample information: `igsr_samples.tsv` ([download](https://www.internationalgenome.org/data-portal/sample)) (`IGSR_SAMPLE_LIST`, for step 3-3-2)
         ```
@@ -36,10 +36,11 @@
         HG00276    female    SAME123424    FIN    Finnish    EUR    European Ancestry    FIN    1000 Genomes on GRCh38,1000 Genomes 30x on GRCh38,1000 Genomes phase 3 release,1000 Genomes phase 1 release,Geuvadis
         ```
 4. SGDP data (`SGDP_BFILE`, for step 3-1, 3-4)
+   * Download VCF from [FTP]( https://sharehost.hms.harvard.edu/genetics/reich_lab/sgdp/vcf_variants/)
     * SNP data
         * Format: PLINK binary filest
-        * Sample: ALL samples
-        * Autosome
+        * Sample: Oceania, EastAsia, SouthAsia
+        * Autosome (chr1~chr22)
     * Sample information: `SGDP_metadata.279publiu.21signedLetter.44Fan.samples.txt` ([download](https://sharehost.hms.harvard.edu/genetics/reich_lab/sgdp/SGDP_metadata.279public.21signedLetter.44Fan.samples.txt)) (`SGDP_SAMPLE_LIST`, for step 3-3-1)
         ```
         #Sequencing_Panel       Illumina_ID     Sample_ID       Sample_ID(Aliases)      SGDP_ID Population_ID   Region  Country Town    Contributor     Gender  Latitude        Longitude       DNA_Source      Embargo "SGDP-lite category: X=FullyPublic, Y=SignedLetterNoDelay, Z=SignedLetterDelay, DO_NOT_USE=do.not.use"
