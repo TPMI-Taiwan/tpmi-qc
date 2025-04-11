@@ -141,6 +141,17 @@ This step also generates common SNPs required for PCA.
 The aim of this step is to identify the Han Chinese population.
 
 Utilizing data from the 1000 Genomes Project and SGDP, we first identify the EAS (East Asian) population using PCA, and then further distinguish the Han Chinese group using Admixture.
+
+### SNPs Selection for PCA analysis
+
+The following steps are applied to the  1000 Genomes Project and SGDP data
+ * Keep autosomal SNPs
+ * Remove SNPs in high LD region
+ * SNPs only (plink --snps-only)
+ * Keep SNPs with maf>0.01
+   
+The cleaned datasets, referred to as `ONEKG_BFILE` and `SGDP_BFILE`, were used as input for downstream processing.
+
 ### 3-1 PCA (06_pca)
 Run PCA using SNPs that are common across 1000 Genomes Project, SGDP and TPMI data.
 ```
