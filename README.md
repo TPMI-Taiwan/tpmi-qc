@@ -21,8 +21,16 @@
 * dplyr
 
 ## Downloaded data
-1. TPMI special SNPs list: `tpm.remove.affy.list` / `tpm2.remove.affy.list` (for step 2-2)
-2. 1000 Genomes Project data (`ONEKG_BFILE`, for step 3-1, 3-4)
+1. Probesets requiring special attention: `tpm.remove.affy.list` / `tpm2.remove.affy.list` (for step 2-2).
+
+   This list includes probesets on the Axiom array that need special handling. It covers:
+    * CNAG probesets used for copy number analysis.
+    * Multiallelic probesets with more than two alleles.
+    * mPCR probesets designed for multiplex PCR.
+
+   These probesets may need to be excluded or analyzed differently to ensure accurate results.
+
+3. 1000 Genomes Project data (`ONEKG_BFILE`, for step 3-1, 3-4)
     * Download VCF from [FTP](http://ftp.1000genomes.ebi.ac.uk/vol1/ftp/data_collections/1000G_2504_high_coverage/working/20201028_3202_phased/) and keep only biallelic SNPs 
     * SNP data
         * Format: PLINK binary fileset
