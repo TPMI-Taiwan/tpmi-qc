@@ -31,7 +31,7 @@
    These probesets may need to be excluded or analyzed differently to ensure accurate results.
 
 3. 1000 Genomes Project data (`ONEKG_BFILE`, for step 3-1, 3-4)
-    * Download VCF from [FTP](http://ftp.1000genomes.ebi.ac.uk/vol1/ftp/data_collections/1000G_2504_high_coverage/working/20201028_3202_phased/) and keep only biallelic SNPs 
+    * Download VCF from [FTP](https://ftp.1000genomes.ebi.ac.uk/vol1/ftp/data_collections/1000G_2504_high_coverage/working/20201028_3202_raw_GT_with_annot/) and keep only biallelic SNPs 
     * SNP data
         * Format: PLINK binary fileset
         * Sample: unrelated samples (Refer to `1kGP.3202_samples.pedigree_info.txt` ([download](http://ftp.1000genomes.ebi.ac.uk/vol1/ftp/data_collections/1000G_2504_high_coverage/working/))) for additional information 
